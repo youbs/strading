@@ -21,6 +21,24 @@ class Request implements \ArrayAccess {
 		$this->xpath = new \DOMXPath($xml);
 	}
 	
+	public function populate (array $data, $namespace = '') {
+		foreach ($data as $k => $v) {
+			if (is_array($v)) {
+				$this->populate($v, $namespace . '/' . $k);
+			} else {
+				$element = $this->xpath->query($namespace . '/' . $k);
+				
+				if ($element->length === 0) {
+					throw new RequestException($namespace . '/' . $k . ' path does not refer to an existing element.');
+				} else if ($element->length > 1) {
+					throw new RequestException($namespace . '/' . $k . ' path is referring to multiple elements.');
+				}
+				
+				$element->item(0)->nodeValue = $v;
+			}
+		}
+	}
+	
 	public function offsetExists ($offset) {
 		throw new \Exception('offsetExists');
 		//return isset($this->data[$offset]);
@@ -72,3 +90,5 @@ class Request implements \ArrayAccess {
 		return $response;
 	}
 }
+
+class RequestException extends \Exception {}
