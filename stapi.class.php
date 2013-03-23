@@ -15,14 +15,22 @@ class STAPI {
 		$this->password = $password;
 	}
 	
-	public function method ($name) {
-		if (!class_exists(__NAMESPACE__ . '\\' . $name) || !is_subclass_of(__NAMESPACE__ . '\\' . $name, __NAMESPACE__ . '\Method')) {
-			throw new STAPIException('Method does not exist or cannot be loaded.');
+	public function load ($name) {
+		$template = __DIR__ . '/templates/' . $name . '.xml';
+		
+		if (!file_exists($template)) {
+			throw new \Exception('Invalid request template.');
 		}
 		
-		$method = __NAMESPACE__ . '\\' . $name;
+		$xml = new \DOMDocument();
+		$xml->load($template);
 		
-		return new $method($this->interface_url, $this->site_reference, $this->username, $this->password);
+		$xpath = new \DOMXPath($xml);
+		
+		$xpath->query('/requestblock/alias')->item(0)->nodeValue = $this->username;
+		$xpath->query('/requestblock/request/operation/sitereference')->item(0)->nodeValue = $this->site_reference;
+		
+		return new Request($this->interface_url, $this->username, $this->password, $xml);
 	}
 }
 

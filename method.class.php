@@ -27,7 +27,6 @@ abstract class Method {
 			$element_alias = $this->dom->createElement('alias', $this->username);
 			
 			$element_request = $this->dom->createElement('request');
-			#$element_request->setAttribute('type', 'AUTH');
 			
 				$element_operation = $this->dom->createElement('operation');
 					
@@ -49,9 +48,9 @@ abstract class Method {
 	
 	public function __call ($name, $arguments) {
 		if (strpos($name, 'request') === 0) {
-			$xml = call_user_func_array([$this, 'get' . substr($name, 7)], $arguments);
+			$xml = call_user_func_array([$this, 'generate' . substr($name, 7)], $arguments);
 			
-			return new Request($this->interface_url, $xml, $this->username, $this->password);
+			return new Request($this->interface_url, $this->username, $this->password, $xml, [$this, 'parse' . substr($name, 7)]);
 		}
 		
 		throw new \Exception('Unknown method: ' . $name);
