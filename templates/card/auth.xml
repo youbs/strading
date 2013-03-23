@@ -17,6 +17,7 @@
 			<street/>
 			<postcode/>
 			<premise/>
+			<email/>
 		</customer>
 		<billing>
 			<telephone/>
