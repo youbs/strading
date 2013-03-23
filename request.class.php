@@ -15,6 +15,8 @@ class Request implements \ArrayAccess {
 		$this->interface_url = $interface_url;
 		$this->headers[] = 'Authorization: Basic ' . base64_encode($username . ':' . $password);
 		
+		$xml->formatOutput = true;
+		
 		$this->request = $xml;
 		$this->xpath = new \DOMXPath($xml);
 	}
