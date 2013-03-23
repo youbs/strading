@@ -2,32 +2,32 @@
 	<alias></alias>
 	<request type="ORDER">
 		<operation>
-			<sitereference></sitereference>
+			<sitereference/>
 			<accounttypedescription>ECOM</accounttypedescription>
 		</operation>
 		<merchant>
-			<orderreference></orderreference>
-			<returnurl></returnurl>
-			<cancelurl></cancelurl>
-			<email></email>
-			<name></name>
+			<orderreference/>
+			<returnurl/>
+			<cancelurl/>
+			<email/>
+			<name/>
 		</merchant>
 		<customer>
 			<delivery/>
-			<name></name>
-			<email></email>
-			<ip></ip>
+			<name/>
+			<email/>
+			<ip/>
 		</customer>
 		<billing>
-			<amount></amount>
-			<premise></premise>
-			<street></street>
-			<town></town>
-			<county></county>
-			<country></country>
-			<postcode></postcode>
+			<amount/>
+			<premise/>
+			<street/>
+			<town/>
+			<county/>
+			<country/>
+			<postcode/>
 			<payment type="PAYPAL">
-				<paypalemail></paypalemail>
+				<paypalemail/>
 			</payment>
 		</billing>
 		<settlement/>
