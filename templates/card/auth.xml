@@ -5,19 +5,22 @@
 			<orderreference/>
 		</merchant>
 		<customer>
-			<town></town>
+			<telephone/>
+			<email/>
+			<forwardedip/>
+			<ip/>
+			<premise/>
+			<street/>
+			<county/>
+			<country/>
+			<postcode/>
+			<town/>
 			<name>
 				<middle/>
 				<prefix/>
 				<last/>
 				<first/>
 			</name>
-			<ip/>
-			<telephone/>
-			<street/>
-			<postcode/>
-			<premise/>
-			<email/>
 		</customer>
 		<billing>
 			<telephone/>
