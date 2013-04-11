@@ -2,6 +2,7 @@
 	<alias/>
 	<request type="AUTH">
 		<merchant>
+			<email/>
 			<orderreference/>
 		</merchant>
 		<customer>
