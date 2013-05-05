@@ -1,5 +1,5 @@
 <?php
-namespace securetrading;
+namespace securetrading\stapi;
 
 class Request implements \ArrayAccess {
 	private
