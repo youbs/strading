@@ -1,5 +1,5 @@
 <?php
-namespace securetrading;
+namespace securetrading\stapi;
 
 class STAPI {
 	private
