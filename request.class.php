@@ -26,6 +26,13 @@ class Request implements \ArrayAccess {
 			if (is_array($v)) {
 				$this->populate($v, $namespace . '/' . $k);
 			} else {
+				$attribute = null;
+				
+				if (($attribute_position = strpos($k, '[')) !== false) {
+					$attribute = substr($k, $attribute_position + 1, -1);
+					$k = substr($k, 0, $attribute_position);
+				}
+				
 				$element = $this->xpath->query($namespace . '/' . $k);
 				
 				if ($element->length === 0) {
@@ -34,7 +41,11 @@ class Request implements \ArrayAccess {
 					throw new RequestException($namespace . '/' . $k . ' path is referring to multiple elements.');
 				}
 				
-				$element->item(0)->nodeValue = $v;
+				if ($attribute) {
+					$element->item(0)->setAttribute($attribute, $v);
+				} else {
+					$element->item(0)->nodeValue = $v;
+				}
 			}
 		}
 	}
