@@ -44,7 +44,8 @@ class Request implements \ArrayAccess {
 				if ($attribute) {
 					$element->item(0)->setAttribute($attribute, $v);
 				} else {
-					$element->item(0)->nodeValue = $v;
+					$element->item(0)->nodeValue = ''; // or while first child remove
+					$element->item(0)->appendChild($this->request->createTextNode($v));
 				}
 			}
 		}

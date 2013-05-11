@@ -19,7 +19,7 @@ class STAPI {
 		$template = __DIR__ . '/templates/' . $name . '.xml';
 		
 		if (!file_exists($template)) {
-			throw new \Exception('Invalid request template.');
+			throw new \ErrorException('Invalid request template.');
 		}
 		
 		$xml = new \DOMDocument();
@@ -27,10 +27,11 @@ class STAPI {
 		
 		$xpath = new \DOMXPath($xml);
 		
-		$xpath->query('/requestblock/alias')->item(0)->nodeValue = $this->username;
-		$xpath->query('/requestblock/request/operation/sitereference')->item(0)->nodeValue = $this->site_reference;
+		$request = new Request($this->interface_url, $this->username, $this->password, $xml);
 		
-		return new Request($this->interface_url, $this->username, $this->password, $xml);
+		$request->populate(['alias' => $this->username, 'request/operation/sitereference' => $this->site_reference], '/requestblock');
+		
+		return $request;
 	}
 }
 
