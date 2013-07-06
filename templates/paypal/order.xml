@@ -1,17 +1,13 @@
 <requestblock version="3.67">
 	<alias></alias>
 	<request type="ORDER">
-		<operation>
-			<sitereference/>
-			<accounttypedescription>ECOM</accounttypedescription>
-		</operation>
 		<merchant>
 			<orderreference/>
 			<returnurl/>
 			<cancelurl/>
 			<email/>
 			<name/>
-		</merchant>
+		</merchant>		
 		<customer>
 			<telephone/>
 			<email/>
@@ -37,11 +33,25 @@
 			<town/>
 			<county/>
 			<country/>
+			<email/>
 			<postcode/>
+			<telephone/>
+			<name>
+				<middle/>
+				<prefix/>
+				<last/>
+				<suffix/>
+				<first/>
+			</name>
 			<payment type="PAYPAL">
+				<locale/>
 				<paypalemail/>
 			</payment>
 		</billing>
 		<settlement/>
+		<operation>
+			<sitereference/>
+			<accounttypedescription>ECOM</accounttypedescription>
+		</operation>
 	</request>
 </requestblock>

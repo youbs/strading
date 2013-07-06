@@ -24,18 +24,15 @@
 			</name>
 		</customer>
 		<billing>
-			<telephone/>
-			<county/>
-			<street/>
-			<postcode/>
+			<amount/>
 			<premise/>
-			<payment>
-				<startdate/>
-				<expirydate/>
-				<pan></pan>
-				<securitycode/>
-			</payment>
+			<street/>
 			<town/>
+			<county/>
+			<country/>
+			<email/>
+			<postcode/>
+			<telephone/>
 			<name>
 				<middle/>
 				<prefix/>
@@ -43,9 +40,12 @@
 				<suffix/>
 				<first/>
 			</name>
-			<country/>
-			<amount/>
-			<email/>
+			<payment>
+				<startdate/>
+				<expirydate/>
+				<pan></pan>
+				<securitycode/>
+			</payment>
 		</billing>
 		<operation>
 			<sitereference/>
