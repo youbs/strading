@@ -1,0 +1,17 @@
+<requestblock version="3.67">
+	<alias/>
+	<request type="REFUND">
+		<merchant>
+			<email/>
+			<orderreference/>
+		</merchant>
+		<billing>
+			<amount/>
+		</billing>
+		<operation>
+			<accounttypedescription>ECOM</accounttypedescription>
+			<parenttransactionreference></parenttransactionreference>
+			<sitereference/>
+		</operation>
+	</request>
+</requestblock>
