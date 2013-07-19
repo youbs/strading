@@ -29,7 +29,11 @@ class STAPI {
 		
 		$request = new Request($this->interface_url, $this->username, $this->password, $xml);
 		
-		$request->populate(['alias' => $this->username, 'request/operation/sitereference' => $this->site_reference], '/requestblock');
+		if ($name === 'transactionquery') {
+			$request->populate(['alias' => $this->username, 'request/filter/sitereference' => $this->site_reference], '/requestblock');
+		} else {
+			$request->populate(['alias' => $this->username, 'request/operation/sitereference' => $this->site_reference], '/requestblock');
+		}	
 		
 		return $request;
 	}

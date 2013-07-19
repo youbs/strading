@@ -1,0 +1,14 @@
+<requestblock version="3.67">
+	<alias/>
+	<request type="TRANSACTIONQUERY">
+		<filter>
+			<billingpremise/>
+			<billingstreet/>
+			<orderreference/>
+			<sitereference/>
+			<transactionreference/>
+			<starttimestamp/>
+			<endtimestamp/>
+		</filter>
+	</request>
+</requestblock>
