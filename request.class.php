@@ -84,9 +84,9 @@ class Request implements \ArrayAccess {
 		$ch = curl_init();
 		
 		// @see http://stackoverflow.com/a/8603358/368691
-		foreach ($this->xpath->query('//*[not(node())]') as $node) {
-			$node->parentNode->removeChild($node);
-		}
+		#foreach ($this->xpath->query('//*[not(node())]') as $node) {
+		#	$node->parentNode->removeChild($node);
+		#}
 		
 		$options = [
 			CURLOPT_URL => $this->interface_url,
