@@ -53,7 +53,6 @@ class Request implements \ArrayAccess {
 	
 	public function offsetExists ($offset) {
 		throw new \Exception('offsetExists');
-		//return isset($this->data[$offset]);
 	}
 	
 	public function offsetGet ($offset) {
@@ -62,12 +61,10 @@ class Request implements \ArrayAccess {
 	
 	public function offsetSet ($offset, $value) {
 		throw new \Exception('offsetSet');
-		//$this->data[$offset] = $value;
 	}
 	
 	public function offsetUnset ($offset) {
 		throw new \Exception('offsetUnset');
-		//unset($this->data[$offset]);
 	}
 	
 	public function getRaw () {
@@ -84,9 +81,13 @@ class Request implements \ArrayAccess {
 		$ch = curl_init();
 		
 		// @see http://stackoverflow.com/a/8603358/368691
-		#foreach ($this->xpath->query('//*[not(node())]') as $node) {
-		#	$node->parentNode->removeChild($node);
-		#}
+		foreach ($this->xpath->query('//*[not(node())]') as $node) {
+			if (!$node->hasAttributes()) {
+				$node->parentNode->removeChild($node);
+			}
+		}
+		
+		#ay( $this->request->saveXML() );
 		
 		$options = [
 			CURLOPT_URL => $this->interface_url,
