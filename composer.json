@@ -1,8 +1,8 @@
 {
-	"name": "gajus/doll",
-	"description": "Extended PDO with deferred connection, logging and benchmarking.",
-	"keywords": ["pdo", "database"],
-	"homepage": "https://github.com/gajus/doll",
+	"name": "gajus/strapi",
+	"description": "Secure Trading Web Services API interface.",
+	"keywords": ["payment", "gateway", "api", "merchant", "secure trading"],
+	"homepage": "https://github.com/gajus/strading",
 	"type": "library",
 	"license": "BSD-3-Clause",
 	"authors": [
