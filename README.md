@@ -106,4 +106,4 @@ Next you issue the request itself against Secure Trading:
 $response = $auth->request();
 ```
 
-I am working on convenience functions to handle the response. In the mean time, response is `SimpleXMLElement` instance.
+I am working on convenience function to handle the response. In the mean time, response is `SimpleXMLElement` instance.
