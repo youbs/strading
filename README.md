@@ -14,7 +14,9 @@ Your primary resource for documentation remains Secure Trading [Web Services](ht
 The following example illustrates how you would make card authorisatin. The API itself is documented under [XML Specification](http://www.securetrading.com/wp-content/uploads/2013/07/STPP-XML-Specification2.pdf) document.
 
 ```php
-$auth = $this->service->request('card/auth');
+$service = new \gajus\strading\Service('site_reference', 'username', 'password');
+
+$auth = $service->request('card/auth');
 
 // Populate /requestblock/request/billing elements.
 $auth->populate([
@@ -55,5 +57,53 @@ $auth->populate([
     'pan' => '4111110000000211',
 ],'/requestblock/request/billing/payment');
 
+echo $auth->getRequestXML();
+```
+
+The above code (mind that you proparly handle the LogicException) will generate the following request:
+
+```xml
+<?xml version="1.0"?>
+<requestblock version="3.67">
+  <alias>username</alias>
+  <request type="AUTH">
+    <merchant>
+      <orderreference>gajus-0000001</orderreference>
+    </merchant>
+    <customer>
+      <email>dummy@gajus.com</email>
+      <name>
+        <last>Kuizinas</last>
+        <first>Gajus</first>
+      </name>
+    </customer>
+    <billing>
+      <amount currencycode="GBP">100</amount>
+      <email>dummy@gajus.com</email>
+      <name>
+        <last>Kuizinas</last>
+        <first>Gajus</first>
+      </name>
+      <payment type="VISA">
+        <expirydate>10/2031</expirydate>
+        <pan>4111110000000211</pan>
+        <securitycode>123</securitycode>
+      </payment>
+    </billing>
+    <operation>
+      <sitereference>site_reference</sitereference>
+      <accounttypedescription>ECOM</accounttypedescription>
+    </operation>
+  </request>
+</requestblock>
+```
+
+The above XML is for illustration only. It is unlikely that you will need to deal with XML except for debugging.
+
+Next you issue the request itself against Secure Trading:
+
+```php
 $response = $auth->request();
 ```
+
+I am working on convenience functions to handle the response. In the mean time, response is `SimpleXMLElement` instance.

@@ -113,6 +113,12 @@ class BuildRequestTest extends PHPUnit_Framework_TestCase {
         $this->assertSame($this->loadXML('build_request_test_populate_existing_template'), $auth->getRequestXML());
     }
 
+
+/*// However, overwriting an existing value will throw LogicException.
+$auth->populate([
+    'pan' => '4111110000000211',
+],'/requestblock/request/billing/payment');*/
+
     public function testTransactionQuerySiteReferenceInFilter () {
         $transactionquery = $this->service->request('transactionquery');
 
