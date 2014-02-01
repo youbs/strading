@@ -20,6 +20,12 @@ class BuildRequestTest extends PHPUnit_Framework_TestCase {
         return str_replace($placeholders, array_values($this->credentials), file_get_contents(__DIR__ . '/xml/' . $test_name . '.xml'));
     }
 
+    public function testGetHeaders () {
+        $auth = $this->service->request('card/auth');
+
+        $this->assertCount(3, $auth->getRequestHeaders());
+    }
+
     /**
      * @expectedException InvalidArgumentException
      * @expectedExceptionMessage Request template does not exist.
