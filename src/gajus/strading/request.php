@@ -78,11 +78,11 @@ class Request {
 	}
 
 	/**
-	 * Request DOM is stripped of empty tags without attributes.
+	 * Request XML is stripped of empty tags without attributes.
 	 *
-	 * @return DOMDocument
+	 * @return string
 	 */
-	public function getRequestDom () {
+	public function getRequestXML () {
 		$dom = clone $this->dom;
 		$dom->preserveWhiteSpace = false;
 		$dom->formatOutput = true;
@@ -95,14 +95,18 @@ class Request {
 			}
 		}
 
-		return $dom;
-
 		$xml = tidy_repair_string($dom->saveXML(), array( 
 			'output-xml' => true, 
 			'input-xml' => true,
 			'indent' => true,
 			'wrap' => false
 		));
+
+		return $xml;
+	}
+
+	public function getRequestHeaders () {
+		return $this->headers;
 	}
 	
 	/*public function offsetGet ($offset) {
@@ -129,8 +133,6 @@ class Request {
 	private function makeRequest () {		
 		$ch = curl_init();
 		
-		$dom = $this->getRequestDom();
-		
 		$options = [
 			CURLOPT_URL => $this->interface_url,
 			CURLOPT_HEADER => false,
@@ -139,8 +141,8 @@ class Request {
 		    CURLOPT_TIMEOUT => 10,
 		    CURLOPT_SSL_VERIFYHOST => 2,
 		    CURLOPT_SSL_VERIFYPEER => true,
-		    CURLOPT_HTTPHEADER => $this->headers,
-		    CURLOPT_POSTFIELDS => trim($dom->saveXML())
+		    CURLOPT_HTTPHEADER => $this->getRequestHeaders(),
+		    CURLOPT_POSTFIELDS => $this->getRequestXML()
 		];
 		
 		curl_setopt_array($ch, $options);

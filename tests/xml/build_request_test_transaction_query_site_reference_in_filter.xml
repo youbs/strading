@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<requestblock version="3.67">
+  <alias>username</alias>
+  <request type="TRANSACTIONQUERY">
+    <filter>
+      <sitereference>site_reference</sitereference>
+    </filter>
+  </request>
+</requestblock>

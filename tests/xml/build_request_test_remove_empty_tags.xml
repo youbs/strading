@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<requestblock version="3.67">
+  <alias>username</alias>
+  <request type="ORDER">
+    <billing>
+      <payment type="PAYPAL"></payment>
+    </billing>
+    <operation>
+      <sitereference>site_reference</sitereference>
+      <accounttypedescription>ECOM</accounttypedescription>
+    </operation>
+  </request>
+</requestblock>
