@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <requestblock version="3.67">
-  <alias>username</alias>
+  <alias>{username}</alias>
   <request type="AUTH">
     <merchant>
       <orderreference>gajus-0000001</orderreference>
@@ -26,7 +26,7 @@
       </payment>
     </billing>
     <operation>
-      <sitereference>site_reference</sitereference>
+      <sitereference>{site_reference}</sitereference>
       <accounttypedescription>ECOM</accounttypedescription>
     </operation>
   </request>

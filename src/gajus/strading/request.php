@@ -45,7 +45,7 @@ class Request {
 	 */
 	public function populate (array $data, $namespace = '') {
 		if ($this->response) {
-			throw new \LogicException('Cannot re-populate data after request.');
+			throw new \LogicException('Cannot populate data after request.');
 		}
 
 		foreach ($data as $k => $v) {
@@ -109,22 +109,19 @@ class Request {
 		return $this->headers;
 	}
 	
-	/*public function offsetGet ($offset) {
-		return $this->xpath->query($offset);
-	}*/
-	
-	#public function getRaw () {
-	#	return $this->response;
-	#}
-	
+	/**
+	 * Issue request.
+	 *
+	 * @return SimpleXMLElement
+	 */
 	public function request () {
 		if ($this->response) {
-			throw new \LogicException('Cannot use Request to produce multiple requests.');
+			throw new \LogicException('Cannot use the same Request instance for multiple requests.');
 		}
 
 		$this->response = $this->makeRequest();
-		
-		return new \SimpleXMLElement($response);
+
+		return new \SimpleXMLElement($this->response);
 	}
 	
 	/**

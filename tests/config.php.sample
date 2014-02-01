@@ -1,0 +1,6 @@
+<?php
+return [
+    'site_reference' => 'Your site reference.',
+    'username' => 'Username',
+    'password' => 'Password'
+];
