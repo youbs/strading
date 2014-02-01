@@ -22,15 +22,52 @@ class BuildRequestTest extends PHPUnit_Framework_TestCase {
 
     /**
      * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage Request template does not exist.
      */
     public function testLoadNotExistingTemplate () {
         $this->service->request('does/not/exist');
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage /foo path does not refer to an existing element.
+     */
+    public function testPopulateNotExistingTag () {
+        $auth = $this->service->request('card/auth');
+
+        $auth->populate([
+            'foo' => 'bar'
+        ]);
     }
 
     public function testRemoveEmptyTags () {
         $order = $this->service->request('paypal/order');
 
         $this->assertSame($this->loadXML('build_request_test_remove_empty_tags'), $order->getRequestXML());
+    }
+
+    public function testSetAttribute () {
+        $transactionquery = $this->service->request('transactionquery');
+
+        $transactionquery->populate([
+            'requestblock' => [
+                'request' => [
+                    'filter[foo]' => 'bar'
+                ]
+            ]
+        ]);
+
+        $this->assertSame($this->loadXML('build_request_test_set_attribute'), $transactionquery->getRequestXML());
+    }
+
+    public function testSetAttributeUsingNamespace () {
+        $transactionquery = $this->service->request('transactionquery');
+
+        $transactionquery->populate([
+            'filter[foo]' => 'bar'
+        ], '/requestblock/request');
+
+        $this->assertSame($this->loadXML('build_request_test_set_attribute'), $transactionquery->getRequestXML());
     }
 
     public function testPopulateExistingTemplate () {

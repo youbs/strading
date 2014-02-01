@@ -37,7 +37,7 @@ class Service {
 		$template = __DIR__ . '/templates/' . $name . '.xml';
 		
 		if (!file_exists($template)) {
-			throw new \InvalidArgumentException('Invalid request template.');
+			throw new \InvalidArgumentException('Request template does not exist.');
 		}
 		
 		$dom = new \DOMDocument();

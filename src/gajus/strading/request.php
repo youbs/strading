@@ -63,9 +63,11 @@ class Request {
 				
 				if ($element->length === 0) {
 					throw new \InvalidArgumentException($namespace . '/' . $k . ' path does not refer to an existing element.');
-				} else if ($element->length > 1) {
-					throw new \InvalidArgumentException($namespace . '/' . $k . ' path is referring to multiple elements.');
 				}
+
+				#else if ($element->length > 1) {
+				#	throw new \InvalidArgumentException($namespace . '/' . $k . ' path is referring to multiple elements.');
+				#}
 				
 				if ($attribute) {
 					$element->item(0)->setAttribute($attribute, $v);
