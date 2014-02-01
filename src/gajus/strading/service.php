@@ -17,11 +17,12 @@ class Service {
 	 * Service is a Factory class carrying Secure Trading authentication parameters
 	 * and supplying Request with the request XML template.
 	 *
-	 * @param string $interface_url
+	 * @param string $site_reference
 	 * @param string $username
-	 * @param string $password 
+	 * @param string $password
+	 * @param string $interface_url
 	 */
-	public function __construct ($interface_url, $site_reference, $username, $password) {
+	public function __construct ($site_reference, $username, $password, $interface_url = 'https://webservices.securetrading.net:443/xml/') {
 		$this->interface_url = $interface_url;
 		$this->site_reference = $site_reference;
 		$this->username = $username;
@@ -43,7 +44,7 @@ class Service {
 		$dom->load($template);
 		$dom->formatOutput = true;
 
-		$request = new Request($this->interface_url, $this->username, $this->password, $dom);	
+		$request = new Request($this->interface_url, $this->site_reference, $this->username, $this->password, $dom);	
 		
 		return $request;
 	}

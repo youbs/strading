@@ -10,7 +10,7 @@
 		</billing>
 		<operation>
 			<accounttypedescription>ECOM</accounttypedescription>
-			<parenttransactionreference></parenttransactionreference>
+			<parenttransactionreference/>
 			<sitereference/>
 		</operation>
 	</request>

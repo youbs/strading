@@ -43,7 +43,7 @@
 			<payment>
 				<startdate/>
 				<expirydate/>
-				<pan></pan>
+				<pan/>
 				<securitycode/>
 			</payment>
 		</billing>

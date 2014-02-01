@@ -6,7 +6,7 @@ namespace gajus\strading;
  * @copyright Copyright (c) 2013-2014, Anuary (http://anuary.com/)
  * @license https://github.com/gajus/strading/blob/master/LICENSE BSD 3-Clause
  */
-class Request /* implements \ArrayAccess*/ {
+class Request {
 	private
 		$interface_url,
 		$headers = ['Content-Type: text/xml;charset=utf-8', 'Accept: text/xml'],
@@ -14,13 +14,22 @@ class Request /* implements \ArrayAccess*/ {
 		$xpath,
 		$response;
 
-	public function __construct ($interface_url, $username, $password, \DOMDocument $dom) {
+	/**
+	 * @param string $interface_url
+	 * @param string $site_reference
+	 * @param string $username
+	 * @param string $password
+	 * @param DOMDocument $dom
+	 */
+	public function __construct ($interface_url, $site_reference, $username, $password, \DOMDocument $dom) {
 		$this->interface_url = $interface_url;
 		$this->headers[] = 'Authorization: Basic ' . base64_encode($username . ':' . $password);
 		$this->dom = $dom;
 		$this->xpath = new \DOMXPath($dom);
 
-		if ($name === 'transactionquery') {
+		$request_type = $this->xpath->query('/requestblock/request')->item(0)->getAttribute('type');
+		
+		if ($request_type === 'TRANSACTIONQUERY') {
 			$this->populate(['alias' => $username, 'request/filter/sitereference' => $site_reference], '/requestblock');
 		} else {
 			$this->populate(['alias' => $username, 'request/operation/sitereference' => $site_reference], '/requestblock');
@@ -32,10 +41,11 @@ class Request /* implements \ArrayAccess*/ {
 	 * 
 	 * @param array $data ['node name' => 'text node value', 'node[attribute]' => 'attribute value', 'parent node' => ['child node' => 'text node value']]
 	 * @param string $namespace
+	 * @return void
 	 */
 	public function populate (array $data, $namespace = '') {
 		if ($this->response) {
-			throw new \LogicException('Cannot use populate Request body with new data post request.');
+			throw new \LogicException('Cannot re-populate data after request.');
 		}
 
 		foreach ($data as $k => $v) {
@@ -60,27 +70,43 @@ class Request /* implements \ArrayAccess*/ {
 				if ($attribute) {
 					$element->item(0)->setAttribute($attribute, $v);
 				} else {
-					$element->item(0)->nodeValue = ''; // or while first child remove
+					$element->item(0)->nodeValue = '';
 					$element->item(0)->appendChild($this->dom->createTextNode($v));
 				}
 			}
 		}
 	}
-	
-	/*public function offsetExists ($offset) {
-		throw new \BadMethodCallException('Method not in use.');
+
+	/**
+	 * Request DOM is stripped of empty tags without attributes.
+	 *
+	 * @return DOMDocument
+	 */
+	public function getRequestDom () {
+		$dom = clone $this->dom;
+		$dom->preserveWhiteSpace = false;
+		$dom->formatOutput = true;
+		$xpath = new \DOMXPath($dom);
+
+		// http://stackoverflow.com/a/21492078/368691
+		while (($node_list = $xpath->query('//*[not(*) and not(@*) and not(text()[normalize-space()])]')) && $node_list->length) {
+			foreach ($node_list as $node) {
+				$node->parentNode->removeChild($node);
+			}
+		}
+
+		return $dom;
+
+		$xml = tidy_repair_string($dom->saveXML(), array( 
+			'output-xml' => true, 
+			'input-xml' => true,
+			'indent' => true,
+			'wrap' => false
+		));
 	}
 	
-	public function offsetGet ($offset) {
+	/*public function offsetGet ($offset) {
 		return $this->xpath->query($offset);
-	}
-	
-	public function offsetSet ($offset, $value) {
-		throw new \BadMethodCallException('Method not in use.');
-	}
-	
-	public function offsetUnset ($offset) {
-		throw new \BadMethodCallException('Method not in use.');
 	}*/
 	
 	#public function getRaw () {
@@ -97,13 +123,13 @@ class Request /* implements \ArrayAccess*/ {
 		return new \SimpleXMLElement($response);
 	}
 	
+	/**
+	 * @return string
+	 */
 	private function makeRequest () {		
 		$ch = curl_init();
 		
-		// Remove all elements that do not have children nodes and attributes.
-		foreach ($this->xpath->query('//*[not(node()) and not(@*)]') as $node) {
-			$node->parentNode->removeChild($node);
-		}
+		$dom = $this->getRequestDom();
 		
 		$options = [
 			CURLOPT_URL => $this->interface_url,
@@ -114,7 +140,7 @@ class Request /* implements \ArrayAccess*/ {
 		    CURLOPT_SSL_VERIFYHOST => 2,
 		    CURLOPT_SSL_VERIFYPEER => true,
 		    CURLOPT_HTTPHEADER => $this->headers,
-		    CURLOPT_POSTFIELDS => trim($this->dom->saveXML())
+		    CURLOPT_POSTFIELDS => trim($dom->saveXML())
 		];
 		
 		curl_setopt_array($ch, $options);
