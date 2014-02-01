@@ -1,5 +1,5 @@
 {
-	"name": "gajus/strapi",
+	"name": "gajus/strading",
 	"description": "Secure Trading Web Services API interface.",
 	"keywords": ["payment", "gateway", "api", "merchant", "secure trading"],
 	"homepage": "https://github.com/gajus/strading",
