@@ -14,7 +14,7 @@ Your primary resource for documentation remains Secure Trading [Web Services](ht
 The following example illustrates how you would make card authorisatin. The API itself is documented under [XML Specification](http://www.securetrading.com/wp-content/uploads/2013/07/STPP-XML-Specification2.pdf) document.
 
 ```php
-$service = new \gajus\strading\Service('site_reference', 'username', 'password');
+$service = new \Gajus\Strading\Service('site_reference', 'username', 'password');
 
 $auth = $service->request('card/auth');
 
