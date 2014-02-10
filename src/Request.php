@@ -1,9 +1,8 @@
 <?php
-namespace gajus\strading;
+namespace Gajus\Strading;
 
 /**
  * @link https://github.com/gajus/strading for the canonical source repository
- * @copyright Copyright (c) 2013-2014, Anuary (http://anuary.com/)
  * @license https://github.com/gajus/strading/blob/master/LICENSE BSD 3-Clause
  */
 class Request {
@@ -45,7 +44,7 @@ class Request {
 	 */
 	public function populate (array $data, $namespace = '') {
 		if ($this->response) {
-			throw new \LogicException('Cannot populate data after request.');
+			throw new Exception\LogicException('Cannot populate data after request.');
 		}
 
 		foreach ($data as $k => $v) {
@@ -62,7 +61,7 @@ class Request {
 				$element = $this->xpath->query($namespace . '/' . $k);
 				
 				if ($element->length === 0) {
-					throw new \InvalidArgumentException($namespace . '/' . $k . ' path does not refer to an existing element.');
+					throw new Exception\InvalidArgumentException($namespace . '/' . $k . ' path does not refer to an existing element.');
 				}
 
 				#else if ($element->length > 1) {
@@ -118,7 +117,7 @@ class Request {
 	 */
 	public function request () {
 		if ($this->response) {
-			throw new \LogicException('Cannot use the same Request instance for multiple requests.');
+			throw new Exception\LogicException('Cannot use the same Request instance for multiple requests.');
 		}
 
 		$this->response = $this->makeRequest();

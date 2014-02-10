@@ -11,7 +11,7 @@ class BuildRequestTest extends PHPUnit_Framework_TestCase {
             $this->credentials = ['site_reference' => 'foo', 'username' => 'bar', 'password' => 'baz'];
         }
 
-        $this->service = new \gajus\strading\Service($this->credentials['site_reference'], $this->credentials['username'], $this->credentials['password']);
+        $this->service = new \Gajus\Strading\Service($this->credentials['site_reference'], $this->credentials['username'], $this->credentials['password']);
     }
 
     private function loadXML ($test_name) {
@@ -27,7 +27,7 @@ class BuildRequestTest extends PHPUnit_Framework_TestCase {
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException Gajus\Strading\Exception\InvalidArgumentException
      * @expectedExceptionMessage Request template does not exist.
      */
     public function testLoadNotExistingTemplate () {
@@ -35,7 +35,7 @@ class BuildRequestTest extends PHPUnit_Framework_TestCase {
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException Gajus\Strading\Exception\InvalidArgumentException
      * @expectedExceptionMessage /foo path does not refer to an existing element.
      */
     public function testPopulateNotExistingTag () {
@@ -113,12 +113,6 @@ class BuildRequestTest extends PHPUnit_Framework_TestCase {
         $this->assertSame($this->loadXML('build_request_test_populate_existing_template'), $auth->getRequestXML());
     }
 
-
-/*// However, overwriting an existing value will throw LogicException.
-$auth->populate([
-    'pan' => '4111110000000211',
-],'/requestblock/request/billing/payment');*/
-
     public function testTransactionQuerySiteReferenceInFilter () {
         $transactionquery = $this->service->request('transactionquery');
 
@@ -126,7 +120,7 @@ $auth->populate([
     }
 
     /**
-     * @expectedException LogicException
+     * @expectedException Gajus\Strading\Exception\LogicException
      * @expectedExceptionMessage Cannot use the same Request instance for multiple requests.
      */
     public function testRequestAfterRequest () {
@@ -141,7 +135,7 @@ $auth->populate([
     }
 
     /**
-     * @expectedException LogicException
+     * @expectedException Gajus\Strading\Exception\LogicException
      * @expectedExceptionMessage Cannot populate data after request.
      */
     public function testPopulateRequestAfterRequest () {

@@ -1,9 +1,8 @@
 <?php
-namespace gajus\strading;
+namespace Gajus\Strading;
 
 /**
  * @link https://github.com/gajus/strading for the canonical source repository
- * @copyright Copyright (c) 2013-2014, Anuary (http://anuary.com/)
  * @license https://github.com/gajus/strading/blob/master/LICENSE BSD 3-Clause
  */
 class Service {
@@ -34,10 +33,10 @@ class Service {
 	 * @return gajus\strading\Request
 	 */
 	public function request ($name) {
-		$template = __DIR__ . '/templates/' . $name . '.xml';
+		$template = __DIR__ . '/template/' . $name . '.xml';
 		
 		if (!file_exists($template)) {
-			throw new \InvalidArgumentException('Request template does not exist.');
+			throw new Exception\InvalidArgumentException('Request template does not exist.');
 		}
 		
 		$dom = new \DOMDocument();
