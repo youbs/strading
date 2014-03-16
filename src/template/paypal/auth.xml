@@ -1,10 +1,10 @@
 <requestblock version="3.67">
-	<alias/>
-	<request type="ORDERDETAILS">
-		<operation>
-			<sitereference/>
-			<parenttransactionreference/>
-		</operation>
-	</request>
-	<request type="AUTH"/>
+    <alias/>
+    <request type="ORDERDETAILS">
+        <operation>
+            <sitereference/>
+            <parenttransactionreference/>
+        </operation>
+    </request>
+    <request type="AUTH"/>
 </requestblock>
