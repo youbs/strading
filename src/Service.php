@@ -30,7 +30,7 @@ class Service {
     
     /**
      * @param string $name Request template name, e.g. "card/order".
-     * @return gajus\strading\Request
+     * @return Gajus\Strading\Request
      */
     public function request ($name) {
         $template = __DIR__ . '/template/' . $name . '.xml';

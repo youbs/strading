@@ -40,7 +40,7 @@ class Request {
      * 
      * @param array $data ['node name' => 'text node value', 'node[attribute]' => 'attribute value', 'parent node' => ['child node' => 'text node value']]
      * @param string $namespace
-     * @return void
+     * @return null
      */
     public function populate (array $data, $namespace = '') {
         if ($this->response) {
@@ -89,7 +89,8 @@ class Request {
         $dom->formatOutput = true;
         $xpath = new \DOMXPath($dom);
 
-        // http://stackoverflow.com/a/21492078/368691
+        // Remove empty tags
+        // @see http://stackoverflow.com/a/21492078/368691
         while (($node_list = $xpath->query('//*[not(*) and not(@*) and not(text()[normalize-space()])]')) && $node_list->length) {
             foreach ($node_list as $node) {
                 $node->parentNode->removeChild($node);
