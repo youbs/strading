@@ -125,7 +125,6 @@ foreach ($response->xpath('/responseblock/response') as $r) {
 }
 
 // Does PayPal require second step?
-
 if (!empty($response->response->paypal->redirecturl)) {
     // Redirect to $response->response->paypal->redirecturl.
 }
