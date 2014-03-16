@@ -9,7 +9,7 @@ Strading is Secure Trading [Web Services](http://www.securetrading.com/support/d
 
 Your primary resource for documentation remains Secure Trading [Web Services](http://www.securetrading.com/support/document/category/web-services/) documentation. Strading provides merely authentication and convenience method `populate` to populate those large request XML templates.
 
-### Example
+### Request
 
 The following example illustrates how you would make card authorisatin. The API itself is documented under [XML Specification](http://www.securetrading.com/wp-content/uploads/2013/07/STPP-XML-Specification2.pdf) document.
 
@@ -106,4 +106,31 @@ Next you issue the request itself against Secure Trading:
 $response = $auth->request();
 ```
 
+### Response
+
 I am working on convenience function to handle the response. In the mean time, response is `SimpleXMLElement` instance.
+
+```php
+$authcode_transaction = null;
+$error = null;
+
+foreach ($response->xpath('/responseblock/response') as $r) {
+    if (!empty($r->error->code)) {
+        // Error
+    }
+    
+    if (!empty($transaction['authcode'])) {
+        $authcode_transaction = $transaction;
+    }
+}
+
+// Does PayPal require second step?
+
+if (!empty($response->response->paypal->redirecturl)) {
+    // Redirect to $response->response->paypal->redirecturl.
+}
+
+if (!isset($authcode_transaction)) {
+    // Transaction declined. Unknown error.
+}
+```
