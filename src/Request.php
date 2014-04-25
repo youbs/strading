@@ -97,12 +97,24 @@ class Request {
             }
         }
 
-        $xml = tidy_repair_string($dom->saveXML(), array( 
-            'output-xml' => true, 
-            'input-xml' => true,
-            'indent' => true,
-            'wrap' => false
-        ));
+        // Remove text nodes that have only whitespace
+        $node_list = $xpath->query("//*[not(*) and not(normalize-space())]");
+
+        foreach ($node_list as $node) {
+            $node->nodeValue = '';
+            $node->removeChild($node->firstChild);
+        }
+
+        $xml = $dom->saveXML();
+
+        if (function_exists('tidy_repair_string')) {
+            $xml = tidy_repair_string($xml, array( 
+                'output-xml' => true, 
+                'input-xml' => true,
+                'indent' => true,
+                'wrap' => false
+            ));
+        }        
 
         return $xml;
     }
@@ -112,7 +124,7 @@ class Request {
     }
     
     /**
-     * Issue request.
+     * Issue the request.
      *
      * @return SimpleXMLElement
      */

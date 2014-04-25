@@ -3,7 +3,7 @@
   <alias>{username}</alias>
   <request type="ORDER">
     <billing>
-      <payment type="PAYPAL"></payment>
+      <payment type="PAYPAL"/>
     </billing>
     <operation>
       <sitereference>{site_reference}</sitereference>

@@ -1,24 +1,42 @@
 # Strading
 
 [![Build Status](https://travis-ci.org/gajus/strading.png?branch=master)](https://travis-ci.org/gajus/strading)
-[![Coverage Status](https://coveralls.io/repos/gajus/strading/badge.png)](https://coveralls.io/r/gajus/strading)
+[![Coverage Status](https://coveralls.io/repos/gajus/strading/badge.png?branch=master)](https://coveralls.io/r/gajus/strading?branch=master)
+[![Latest Stable Version](https://poser.pugx.org/gajus/strading/version.png)](https://packagist.org/packages/gajus/strading)
+[![License](https://poser.pugx.org/gajus/strading/license.png)](https://packagist.org/packages/gajus/strading)
 
-Strading is Secure Trading [Web Services](http://www.securetrading.com/support/document/category/web-services/) API interface. The current implementation is handling card and payment transactions. Though, it can be easily extended to use any other API interface.
+Strading is Secure Trading [Web Services](http://www.securetrading.com/support/document/category/web-services/) API interface. The current implementation is handling card and payment transactions. Strading can be extended to use any other API interface.
 
 ## Documentation
 
-Your primary resource for documentation remains Secure Trading [Web Services](http://www.securetrading.com/support/document/category/web-services/) documentation. Strading provides merely authentication and convenience method `populate` to populate those large request XML templates.
+The primary resource is Secure Trading [Web Services](http://www.securetrading.com/support/document/category/web-services/) documentation. Strading handles authentication and provides a convenience method `populate` to populate the request XML template.
 
-### Request
+### Card Authorisation Request Example
 
-The following example illustrates how you would make card authorisatin. The API itself is documented under [XML Specification](http://www.securetrading.com/wp-content/uploads/2013/07/STPP-XML-Specification2.pdf) document.
+The API itself is documented under [XML Specification](http://www.securetrading.com/wp-content/uploads/2013/07/STPP-XML-Specification2.pdf) document.
 
 ```php
+/**
+ * @param string $site_reference
+ * @param string $username
+ * @param string $password
+ * @param string $interface_url
+ */
 $service = new \Gajus\Strading\Service('site_reference', 'username', 'password');
 
+/**
+ * @param string $name Request template name, e.g. "card/order".
+ * @return Gajus\Strading\Request
+ */
 $auth = $service->request('card/auth');
 
-// Populate /requestblock/request/billing elements.
+/**
+ * Populate XML template with given data.
+ * 
+ * @param array $data ['node name' => 'text node value', 'node[attribute]' => 'attribute value', 'parent node' => ['child node' => 'text node value']]
+ * @param string $namespace
+ * @return null
+ */
 $auth->populate([
     'payment' => [
         'pan' => '4111110000000211',
@@ -57,6 +75,11 @@ $auth->populate([
     'pan' => '4111110000000211',
 ],'/requestblock/request/billing/payment');
 
+/**
+ * Request XML is stripped of empty tags without attributes.
+ *
+ * @return string
+ */
 echo $auth->getRequestXML();
 ```
 

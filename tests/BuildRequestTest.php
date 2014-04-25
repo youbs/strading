@@ -49,7 +49,9 @@ class BuildRequestTest extends PHPUnit_Framework_TestCase {
     public function testRemoveEmptyTags () {
         $order = $this->service->request('paypal/order');
 
-        $this->assertSame($this->loadXML('build_request_test_remove_empty_tags'), $order->getRequestXML());
+        #die(var_dump( $this->loadXML('build_request_test_remove_empty_tags'), $order->getRequestXML() ));
+
+        $this->assertXmlStringEqualsXmlString($this->loadXML('build_request_test_remove_empty_tags'), $order->getRequestXML());
     }
 
     public function testSetAttribute () {
@@ -63,7 +65,7 @@ class BuildRequestTest extends PHPUnit_Framework_TestCase {
             ]
         ]);
 
-        $this->assertSame($this->loadXML('build_request_test_set_attribute'), $transactionquery->getRequestXML());
+        $this->assertXmlStringEqualsXmlString($this->loadXML('build_request_test_set_attribute'), $transactionquery->getRequestXML());
     }
 
     public function testSetAttributeUsingNamespace () {
@@ -73,7 +75,7 @@ class BuildRequestTest extends PHPUnit_Framework_TestCase {
             'filter[foo]' => 'bar'
         ], '/requestblock/request');
 
-        $this->assertSame($this->loadXML('build_request_test_set_attribute'), $transactionquery->getRequestXML());
+        $this->assertXmlStringEqualsXmlString($this->loadXML('build_request_test_set_attribute'), $transactionquery->getRequestXML());
     }
 
     public function testPopulateExistingTemplate () {
@@ -110,13 +112,13 @@ class BuildRequestTest extends PHPUnit_Framework_TestCase {
             ]
         ], '/requestblock/request');
 
-        $this->assertSame($this->loadXML('build_request_test_populate_existing_template'), $auth->getRequestXML());
+        $this->assertXmlStringEqualsXmlString($this->loadXML('build_request_test_populate_existing_template'), $auth->getRequestXML());
     }
 
     public function testTransactionQuerySiteReferenceInFilter () {
         $transactionquery = $this->service->request('transactionquery');
 
-        $this->assertSame($this->loadXML('build_request_test_transaction_query_site_reference_in_filter'), $transactionquery->getRequestXML());
+        $this->assertXmlStringEqualsXmlString($this->loadXML('build_request_test_transaction_query_site_reference_in_filter'), $transactionquery->getRequestXML());
     }
 
     /**

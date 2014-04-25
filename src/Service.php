@@ -13,9 +13,6 @@ class Service {
         $password;
     
     /**
-     * Service is a Factory class carrying Secure Trading authentication parameters
-     * and supplying Request with the request XML template.
-     *
      * @param string $site_reference
      * @param string $username
      * @param string $password
