@@ -13,7 +13,7 @@ class Service {
         $password;
     
     /**
-     * @param string $site_reference
+     * @param string $site_reference The Merchant's Site Reference.
      * @param string $username
      * @param string $password
      * @param string $interface_url

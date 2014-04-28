@@ -7,10 +7,25 @@ namespace Gajus\Strading;
  */
 class Request {
     private
+        /**
+         * @var string
+         */
         $interface_url,
+        /**
+         * @var array
+         */
         $headers = ['Content-Type: text/xml;charset=utf-8', 'Accept: text/xml'],
+        /**
+         * @var DOMDocument
+         */
         $dom,
+        /**
+         * @var DOMXPath
+         */
         $xpath,
+        /**
+         * @var string
+         */
         $response;
 
     /**

@@ -5,7 +5,7 @@
 [![Latest Stable Version](https://poser.pugx.org/gajus/strading/version.png)](https://packagist.org/packages/gajus/strading)
 [![License](https://poser.pugx.org/gajus/strading/license.png)](https://packagist.org/packages/gajus/strading)
 
-Strading is Secure Trading [Web Services](http://www.securetrading.com/support/document/category/web-services/) API interface. The current implementation is handling card and payment transactions. Strading can be extended to use any other API interface.
+Secure Trading [Web Services](http://www.securetrading.com/support/document/category/web-services/) API abstraction.
 
 ## Documentation
 

@@ -5,11 +5,11 @@ class BuildRequestTest extends PHPUnit_Framework_TestCase {
         $service;
 
     public function setUp () {
-        if (file_exists(__DIR__ . '/config.php')) {
-            $this->credentials = require __DIR__ . '/config.php';
-        } else {
-            $this->credentials = ['site_reference' => 'foo', 'username' => 'bar', 'password' => 'baz'];
-        }
+        $this->credentials = [
+            'site_reference' => 'test_github53934',
+            'username' => 'g.kuizinas@anuary.com',
+            'password' => '3szskMk4'
+        ];
 
         $this->service = new \Gajus\Strading\Service($this->credentials['site_reference'], $this->credentials['username'], $this->credentials['password']);
     }
@@ -48,8 +48,6 @@ class BuildRequestTest extends PHPUnit_Framework_TestCase {
 
     public function testRemoveEmptyTags () {
         $order = $this->service->request('paypal/order');
-
-        #die(var_dump( $this->loadXML('build_request_test_remove_empty_tags'), $order->getRequestXML() ));
 
         $this->assertXmlStringEqualsXmlString($this->loadXML('build_request_test_remove_empty_tags'), $order->getRequestXML());
     }
@@ -126,10 +124,6 @@ class BuildRequestTest extends PHPUnit_Framework_TestCase {
      * @expectedExceptionMessage Cannot use the same Request instance for multiple requests.
      */
     public function testRequestAfterRequest () {
-        if ($this->credentials['site_reference'] === 'foo') {
-            $this->markTestSkipped('Skipped until Secure Trading provides API credentials for testing.');
-        }
-
         $auth = $this->service->request('card/auth');
 
         $auth->request();
@@ -141,10 +135,6 @@ class BuildRequestTest extends PHPUnit_Framework_TestCase {
      * @expectedExceptionMessage Cannot populate data after request.
      */
     public function testPopulateRequestAfterRequest () {
-        if ($this->credentials['site_reference'] === 'foo') {
-            $this->markTestSkipped('Skipped until Secure Trading provides API credentials for testing.');
-        }
-
         $auth = $this->service->request('card/auth');
 
         $auth->request();
