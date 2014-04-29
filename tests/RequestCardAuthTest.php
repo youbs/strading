@@ -83,8 +83,22 @@ class RequestCardAuthTest extends PHPUnit_Framework_TestCase {
 
         $response = $auth->request();
 
-        // All requests have the generic information available.
-        $this->assertNotNull($response->getTransaction());
+        $transaction = $response->getTransaction();
+
+        $this->assertNotNull($transaction, 'Card Auth transaction cannot be NULL.');
+
+        $this->assertNotNull($transaction['request_reference'], 'Card Auth transaction must resolve "request_reference".');
+        $this->assertNotNull($transaction['transaction_type'], 'Card Auth transaction must resolve "transaction_type".');
+        $this->assertNotNull($transaction['transaction_reference'], 'Card Auth transaction must resolve "transaction_reference".');
+        $this->assertNotNull($transaction['timestamp'], 'Card Auth transaction must resolve "timestamp".');
+        $this->assertNull($transaction['parent_transaction_reference'], 'Card Auth transaction must not resolve "parent_transaction_reference".');
+        $this->assertNotNull($transaction['authcode'], 'Card Auth transaction must resolve "authcode".');
+        $this->assertNotNull($transaction['amount'], 'Card Auth transaction must resolve "amount.');
+        $this->assertNull($transaction['paypal_token'], 'Card Auth transaction must not resolve "paypal_token".');
+        
+        $this->assertCount(8, $transaction, 'Transaction must consist of 8 entities.');
+        
+        $this->assertSame('VISA', $transaction['transaction_type'], '"transaction_type" must be "VISA"');
 
         // Valid "card/auth" must not produce an error.
         $this->assertNull($response->getError());

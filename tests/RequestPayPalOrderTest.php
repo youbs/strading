@@ -84,14 +84,16 @@ class RequestPayPalOrderTest extends PHPUnit_Framework_TestCase {
 
         $transaction = $response->getTransaction();
 
-        $this->assertNotNull($transaction['request_reference'], 'PayPal order transaction must resolve "request_reference".');
-        $this->assertNotNull($transaction['transaction_type'], 'PayPal order transaction must resolve "transaction_type".');
-        $this->assertNotNull($transaction['transaction_reference'], 'PayPal order transaction must resolve "transaction_reference".');
-        $this->assertNotNull($transaction['timestamp'], 'PayPal order transaction must resolve "timestamp".');
-        $this->assertNull($transaction['parent_transaction_reference'], 'PayPal order transaction must not resolve "parent_transaction_reference".');
-        $this->assertNull($transaction['authcode'], 'PayPal order transaction must not resolve "authcode".');
-        $this->assertNull($transaction['amount'], 'PayPal order transaction must not resolve "amount.');
-        $this->assertNotNull($transaction['paypal_token'], 'PayPal order transaction must resolve "paypal_token".');
+        $this->assertNotNull($transaction, 'PayPal Order transaction cannot be NULL.');
+
+        $this->assertNotNull($transaction['request_reference'], 'PayPal Order transaction must resolve "request_reference".');
+        $this->assertNotNull($transaction['transaction_type'], 'PayPal Order transaction must resolve "transaction_type".');
+        $this->assertNotNull($transaction['transaction_reference'], 'PayPal Order transaction must resolve "transaction_reference".');
+        $this->assertNotNull($transaction['timestamp'], 'PayPal Order transaction must resolve "timestamp".');
+        $this->assertNull($transaction['parent_transaction_reference'], 'PayPal Order transaction must not resolve "parent_transaction_reference".');
+        $this->assertNull($transaction['authcode'], 'PayPal Order transaction must not resolve "authcode".');
+        $this->assertNull($transaction['amount'], 'PayPal Order transaction must not resolve "amount.');
+        $this->assertNotNull($transaction['paypal_token'], 'PayPal Order transaction must resolve "paypal_token".');
         
         $this->assertCount(8, $transaction, 'Transaction must consist of 8 entities.');
         
