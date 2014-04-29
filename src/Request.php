@@ -14,40 +14,45 @@ class Request {
         /**
          * @var array
          */
-        $headers = ['Content-Type: text/xml;charset=utf-8', 'Accept: text/xml'],
+        $headers = array('Content-Type: text/xml;charset=utf-8', 'Accept: text/xml'),
         /**
-         * @var DOMDocument
+         * @var SimpleXMLElement
          */
-        $dom,
-        /**
-         * @var DOMXPath
-         */
-        $xpath,
+        $xml,
         /**
          * @var string
          */
-        $response;
+        $type;
 
     /**
      * @param string $interface_url
      * @param string $site_reference
      * @param string $username
      * @param string $password
-     * @param DOMDocument $dom
+     * @param SimpleXMLElement $xml
      */
-    public function __construct ($interface_url, $site_reference, $username, $password, \DOMDocument $dom) {
+    public function __construct ($interface_url, $site_reference, $username, $password, \SimpleXMLElement $xml) {
         $this->interface_url = $interface_url;
         $this->headers[] = 'Authorization: Basic ' . base64_encode($username . ':' . $password);
-        $this->dom = $dom;
-        $this->xpath = new \DOMXPath($dom);
+        $this->xml = $xml;
 
-        $request_type = $this->xpath->query('/requestblock/request')->item(0)->getAttribute('type');
-        
-        if ($request_type === 'TRANSACTIONQUERY') {
-            $this->populate(['alias' => $username, 'request/filter/sitereference' => $site_reference], '/requestblock');
+        $this->type = (string) $this->xml->xpath('/requestblock/request')[0]->attributes()['type'];
+
+        if ($this->getType() === 'TRANSACTIONQUERY') {
+            $this->populate(array(
+                'alias' => $username,
+                'request/filter/sitereference' => $site_reference
+            ), '/requestblock');
         } else {
-            $this->populate(['alias' => $username, 'request/operation/sitereference' => $site_reference], '/requestblock');
+            $this->populate(array(
+                'alias' => $username,
+                'request/operation/sitereference' => $site_reference
+            ), '/requestblock');
         }
+    }
+
+    public function getType () {
+        return mb_strtoupper($this->type);
     }
     
     /**
@@ -58,10 +63,6 @@ class Request {
      * @return null
      */
     public function populate (array $data, $namespace = '') {
-        if ($this->response) {
-            throw new Exception\LogicException('Cannot populate data after request.');
-        }
-
         foreach ($data as $k => $v) {
             if (is_array($v)) {
                 $this->populate($v, $namespace . '/' . $k);
@@ -73,35 +74,33 @@ class Request {
                     $k = substr($k, 0, $attribute_position);
                 }
                 
-                $element = $this->xpath->query($namespace . '/' . $k);
+                $element = $this->xml->xpath($namespace . '/' . $k);
                 
-                if ($element->length === 0) {
+                if (count($element) === 0) {
                     throw new Exception\InvalidArgumentException($namespace . '/' . $k . ' path does not refer to an existing element.');
+                } else if (count($element) > 1) {
+                    throw new \InvalidArgumentException($namespace . '/' . $k . ' path is referring to multiple elements.');
                 }
 
-                #else if ($element->length > 1) {
-                #    throw new \InvalidArgumentException($namespace . '/' . $k . ' path is referring to multiple elements.');
-                #}
-                
                 if ($attribute) {
-                    $element->item(0)->setAttribute($attribute, $v);
+                    $element[0]->addAttribute($attribute, $v);
                 } else {
-                    $element->item(0)->nodeValue = '';
-                    $element->item(0)->appendChild($this->dom->createTextNode($v));
+                    $element[0]->{0} = $v;
                 }
             }
         }
     }
 
     /**
-     * Request XML is stripped of empty tags without attributes.
+     * Request XML stripped of empty tags without attributes.
      *
      * @return string
      */
-    public function getRequestXML () {
-        $dom = clone $this->dom;
+    public function getXML () {
+        $dom = new \DOMDocument;
         $dom->preserveWhiteSpace = false;
         $dom->formatOutput = true;
+        $dom->loadXML($this->xml->asXML());
         $xpath = new \DOMXPath($dom);
 
         // Remove empty tags
@@ -122,44 +121,22 @@ class Request {
 
         $xml = $dom->saveXML();
 
-        if (function_exists('tidy_repair_string')) {
-            $xml = tidy_repair_string($xml, array( 
-                'output-xml' => true, 
-                'input-xml' => true,
-                'indent' => true,
-                'wrap' => false
-            ));
-        }        
-
         return $xml;
     }
 
-    public function getRequestHeaders () {
+    public function getHeaders () {
         return $this->headers;
     }
     
     /**
      * Issue the request.
      *
-     * @return SimpleXMLElement
+     * @return Gajus\Strading\Response
      */
     public function request () {
-        if ($this->response) {
-            throw new Exception\LogicException('Cannot use the same Request instance for multiple requests.');
-        }
-
-        $this->response = $this->makeRequest();
-
-        return new \SimpleXMLElement($this->response);
-    }
-    
-    /**
-     * @return string
-     */
-    private function makeRequest () {        
         $ch = curl_init();
-        
-        $options = [
+
+        $options = array(
             CURLOPT_URL => $this->interface_url,
             CURLOPT_HEADER => false,
             CURLOPT_RETURNTRANSFER => true,
@@ -167,14 +144,22 @@ class Request {
             CURLOPT_TIMEOUT => 10,
             CURLOPT_SSL_VERIFYHOST => 2,
             CURLOPT_SSL_VERIFYPEER => true,
-            CURLOPT_HTTPHEADER => $this->getRequestHeaders(),
-            CURLOPT_POSTFIELDS => $this->getRequestXML()
-        ];
-        
+            CURLOPT_HTTPHEADER => $this->getHeaders(),
+            CURLOPT_POSTFIELDS => $this->getXML()
+        );
+
         curl_setopt_array($ch, $options);
         
-        $response = curl_exec($ch);
+        $raw_response = curl_exec($ch);
+
+        $info  = curl_getinfo($ch);
+
+        if ($info['http_code'] !== 200) {
+            throw new Exception\RuntimeException($raw_response);
+        }
+
+        $response = new \SimpleXMLElement($raw_response);
         
-        return $response;
+        return new Response($response, $this);   
     }
 }

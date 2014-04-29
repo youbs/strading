@@ -36,11 +36,9 @@ class Service {
             throw new Exception\InvalidArgumentException('Request template does not exist.');
         }
         
-        $dom = new \DOMDocument();
-        $dom->load($template);
-        $dom->formatOutput = true;
+        $xml = new \SimpleXMLElement(file_get_contents($template));
 
-        $request = new Request($this->interface_url, $this->site_reference, $this->username, $this->password, $dom);    
+        $request = new Request($this->interface_url, $this->site_reference, $this->username, $this->password, $xml);    
         
         return $request;
     }

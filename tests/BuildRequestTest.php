@@ -1,15 +1,15 @@
 <?php
-class BuildRequestTest extends PHPUnit_Framework_TestCase {
+class RequestTest extends PHPUnit_Framework_TestCase {
     private
         $credentials,
         $service;
 
     public function setUp () {
-        $this->credentials = [
+        $this->credentials = array(
             'site_reference' => 'test_github53934',
-            'username' => 'g.kuizinas@anuary.com',
-            'password' => '3szskMk4'
-        ];
+            'username' => 'api@anuary.com',
+            'password' => '93gbjdMR'
+        );
 
         $this->service = new \Gajus\Strading\Service($this->credentials['site_reference'], $this->credentials['username'], $this->credentials['password']);
     }
@@ -20,12 +20,6 @@ class BuildRequestTest extends PHPUnit_Framework_TestCase {
         return str_replace($placeholders, array_values($this->credentials), file_get_contents(__DIR__ . '/xml/' . $test_name . '.xml'));
     }
 
-    public function testGetHeaders () {
-        $auth = $this->service->request('card/auth');
-
-        $this->assertCount(3, $auth->getRequestHeaders());
-    }
-
     /**
      * @expectedException Gajus\Strading\Exception\InvalidArgumentException
      * @expectedExceptionMessage Request template does not exist.
@@ -34,117 +28,64 @@ class BuildRequestTest extends PHPUnit_Framework_TestCase {
         $this->service->request('does/not/exist');
     }
 
+    public function testBuildRequest () {
+        $auth = $this->service->request('card/auth');
+
+        $this->assertInstanceOf('Gajus\Strading\Request', $auth);
+
+        $request_xml = $auth->getXML();
+
+        // The purpose of this test is to make sure that request is stripped of empty tags.
+        $this->assertXmlStringEqualsXmlString($this->loadXML('build_request/test_build_request'), $request_xml);
+
+        return $auth;
+    }
+
     /**
+     * @depends testBuildRequest
+     */
+    public function testGetHeaders (\Gajus\Strading\Request $auth) {
+        $headers = $auth->getHeaders();
+
+        $this->assertSame(array(
+            'Content-Type: text/xml;charset=utf-8',
+            'Accept: text/xml',
+            'Authorization: Basic YXBpQGFudWFyeS5jb206OTNnYmpkTVI='
+        ), $headers);
+    }
+
+    /**
+     * @depends testBuildRequest
      * @expectedException Gajus\Strading\Exception\InvalidArgumentException
      * @expectedExceptionMessage /foo path does not refer to an existing element.
      */
-    public function testPopulateNotExistingTag () {
-        $auth = $this->service->request('card/auth');
-
-        $auth->populate([
+    public function testPopulateNotExistingTag (\Gajus\Strading\Request $auth) {
+        $auth->populate(array(
             'foo' => 'bar'
-        ]);
-    }
-
-    public function testRemoveEmptyTags () {
-        $order = $this->service->request('paypal/order');
-
-        $this->assertXmlStringEqualsXmlString($this->loadXML('build_request_test_remove_empty_tags'), $order->getRequestXML());
+        ));
     }
 
     public function testSetAttribute () {
         $transactionquery = $this->service->request('transactionquery');
 
-        $transactionquery->populate([
-            'requestblock' => [
-                'request' => [
+        $transactionquery->populate(array(
+            'requestblock' => array(
+                'request' => array(
                     'filter[foo]' => 'bar'
-                ]
-            ]
-        ]);
+                )
+            )
+        ));
 
-        $this->assertXmlStringEqualsXmlString($this->loadXML('build_request_test_set_attribute'), $transactionquery->getRequestXML());
+        $this->assertXmlStringEqualsXmlString($this->loadXML('build_request/test_set_attribute'), $transactionquery->getXML());
     }
 
     public function testSetAttributeUsingNamespace () {
         $transactionquery = $this->service->request('transactionquery');
 
-        $transactionquery->populate([
+        $transactionquery->populate(array(
             'filter[foo]' => 'bar'
-        ], '/requestblock/request');
+        ), '/requestblock/request');
 
-        $this->assertXmlStringEqualsXmlString($this->loadXML('build_request_test_set_attribute'), $transactionquery->getRequestXML());
-    }
-
-    public function testPopulateExistingTemplate () {
-        $auth = $this->service->request('card/auth');
-
-        $auth->populate([
-            'payment' => [
-                'pan' => '4111110000000211',
-                'securitycode' => '123',
-                'expirydate' => '10/2031'
-            ],
-            'payment[type]' => 'VISA'
-        ],'/requestblock/request/billing');
-
-        $auth->populate([
-            'billing' => [
-                'amount' => 100,
-                'amount[currencycode]' => 'GBP',
-                'email' => 'dummy@gajus.com',
-                'name' => [
-                    'first' => 'Gajus',
-                    'last' => 'Kuizinas'
-                ]
-            ],
-            'merchant' => [
-                'orderreference' => 'gajus-0000001'
-            ],
-            'customer' => [
-                'name' => [
-                        'first' => 'Gajus',
-                        'last' => 'Kuizinas'
-                    ],
-                'email' => 'dummy@gajus.com'
-            ]
-        ], '/requestblock/request');
-
-        $this->assertXmlStringEqualsXmlString($this->loadXML('build_request_test_populate_existing_template'), $auth->getRequestXML());
-    }
-
-    public function testTransactionQuerySiteReferenceInFilter () {
-        $transactionquery = $this->service->request('transactionquery');
-
-        $this->assertXmlStringEqualsXmlString($this->loadXML('build_request_test_transaction_query_site_reference_in_filter'), $transactionquery->getRequestXML());
-    }
-
-    /**
-     * @expectedException Gajus\Strading\Exception\LogicException
-     * @expectedExceptionMessage Cannot use the same Request instance for multiple requests.
-     */
-    public function testRequestAfterRequest () {
-        $auth = $this->service->request('card/auth');
-
-        $auth->request();
-        $auth->request();
-    }
-
-    /**
-     * @expectedException Gajus\Strading\Exception\LogicException
-     * @expectedExceptionMessage Cannot populate data after request.
-     */
-    public function testPopulateRequestAfterRequest () {
-        $auth = $this->service->request('card/auth');
-
-        $auth->request();
-
-        $auth->populate([
-            'payment' => [
-                'pan' => '4111110000000211',
-                'securitycode' => '123',
-                'expirydate' => '10/2031'
-            ]
-        ],'/requestblock/request/billing');
+        $this->assertXmlStringEqualsXmlString($this->loadXML('build_request/test_set_attribute'), $transactionquery->getXML());
     }
 }
