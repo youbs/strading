@@ -5,7 +5,7 @@
 [![Latest Stable Version](https://poser.pugx.org/gajus/strading/version.png)](https://packagist.org/packages/gajus/strading)
 [![License](https://poser.pugx.org/gajus/strading/license.png)](https://packagist.org/packages/gajus/strading)
 
-Secure Trading [Web Services](http://www.securetrading.com/support/document/category/web-services/) (STWS) API abstraction.
+Secure Trading Web Services API abstraction.
 
 ## Documentation
 
@@ -15,7 +15,7 @@ Secure Trading [Web Services](http://www.securetrading.com/support/document/cate
 3. [Make request](#make-request)
 4. [Interpret response](#interpret-response)
 
-To learn about the different types of requests and the required attributes, refer to the Secure Trading [Web Services](http://www.securetrading.com/support/document/category/web-services/) API documentation.
+To learn about the different types of requests and the required attributes, refer to the Secure Trading [Web Services API documentation](http://www.securetrading.com/support/document/category/web-services/).
 
 ### Instantiating Strading
 
