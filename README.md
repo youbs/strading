@@ -9,13 +9,11 @@ Secure Trading [Web Services](http://www.securetrading.com/support/document/cate
 
 ## Documentation
 
-Working with Strading involves:
-
-1. Instantiating Strading
-1. Load request template
-2. Populate the template
-3. Make request
-4. Interpret response
+1. [Instantiating Strading](#instantiating-strading)
+1. [Load request template](#load-request-template)
+2. [Populate the template](#populate-the-template)
+3. [Make request](#make-request)
+4. [Interpret response](#interpret-response)
 
 To learn about the different types of requests and the required attributes, refer to the Secure Trading [Web Services](http://www.securetrading.com/support/document/category/web-services/) API documentation.
 
