@@ -62,6 +62,20 @@ class Response {
     }
 
     /**
+     * Transaction abstracts access to the most generic information about the response:
+     *
+     * - request_reference
+     * - transaction_type
+     * - transaction_reference
+     * - timestamp
+     * - parent_transaction_reference
+     * - authcode
+     * - amount
+     * - paypal_token
+     * 
+     * Presence of this data will depend on the type of the response you receive, e.g.
+     * only PayPal order request will include "paypal_token" parameter.
+     * 
      * @return array
      */
     public function getTransaction () {
@@ -69,6 +83,8 @@ class Response {
     }
 
     /**
+     * This information is available when response type is "ERROR".
+     *
      * @return null|Gajus\Strading\Error
      */
     public function getError () {
@@ -80,26 +96,25 @@ class Response {
     }
 
     /**
-     * This information is available after "paypal/order" request.
-     * Client will be returned to the client with information required to finalise the transaction.
+     * This information is available in response to the "paypal/order" request.
      * 
-     * @return string URL to redirect to the client to.
+     * @return null|string URL to redirect the client to.
      */
     public function getRedirectUrl () {
         return $this->redirect_url;
     }
 
     /**
-     * @return string Response type can be auth, error or redirect (in case of PayPal).
+     * @return string Response type.
      */
     public function getType () {
         return $this->type;
     }
 
     /**
-     * @return SimpleXMLElement Raw XML response.
+     * @return string Raw XML response.
      */
     public function getXML () {
-        return $this->xml;
+        return $this->xml->asXML();
     }
 }

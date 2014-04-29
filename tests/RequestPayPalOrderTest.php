@@ -78,7 +78,7 @@ class RequestPayPalOrderTest extends PHPUnit_Framework_TestCase {
 
         $response = $auth->request();
 
-        $response_xml = $this->normaliseXML($response->getXML()->asXML());
+        $response_xml = $this->normaliseXML($response->getXML());
 
         $this->assertXmlStringEqualsXmlString($this->normaliseXML($this->loadXML('request_paypal_order/test_make_request')), $response_xml);
 

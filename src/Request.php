@@ -37,7 +37,8 @@ class Request {
         $this->xml = $xml;
 
         // @todo What about multipart requests?
-        $this->type = (string) $this->xml->xpath('/requestblock/request')[0]->attributes()['type'];
+        $this->type = $this->xml->xpath('/requestblock/request');
+        $this->type = (string) $this->type[0]->attributes()['type'];
 
         if ($this->getType() === 'TRANSACTIONQUERY') {
             $this->populate(array(
@@ -52,15 +53,18 @@ class Request {
         }
     }
 
+    /**
+     * @return string
+     */
     public function getType () {
-        return mb_strtoupper($this->type);
+        return $this->type;
     }
     
     /**
-     * Populate XML template with given data.
+     * Populate XML template using data from an array.
      * 
-     * @param array $data ['node name' => 'text node value', 'node[attribute]' => 'attribute value', 'parent node' => ['child node' => 'text node value']]
-     * @param string $namespace
+     * @param array $data ['node name' => 'text node value', 'another node[attribute]' => 'attribute value']
+     * @param string $namespace XML namespace under which the node resides, e.g. /requestblock/request
      * @return null
      */
     public function populate (array $data, $namespace = '') {
