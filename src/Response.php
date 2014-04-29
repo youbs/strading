@@ -39,11 +39,6 @@ class Response {
 
         $this->type = (string) $response->attributes()['type'];
 
-        // Relevant to card payment only.
-        #if (count($this->xml->xpath('/responseblock/response')) !== 1) {
-        #    throw new Exception\UnexpectedValueException('Multipart response.');
-        #}        
-
         $this->transaction['request_reference'] = (string) $this->xml->xpath('/responseblock')[0]->requestreference;
         $this->transaction['transaction_type'] =  empty($response->billing->payment['type']) ? null : (string) $response->billing->payment['type'];
         $this->transaction['transaction_reference'] =  empty($response->transactionreference) ? null : (string) $response->transactionreference;
@@ -64,22 +59,16 @@ class Response {
         if (!empty($response->paypal->redirecturl)) {
             $this->redirect_url = (string) $response->paypal->redirecturl;
         }
-
-        /* else if (empty($transaction['authcode'])) {
-            throw new \Arqiva\MAMA\Exception\LogicException('Transaction declined. Unknown error.');
-        }*/
     }
 
     /**
-     * 
+     * @return array
      */
     public function getTransaction () {
         return $this->transaction;
     }
 
     /**
-     * 
-     * 
      * @return null|Gajus\Strading\Error
      */
     public function getError () {
@@ -101,7 +90,6 @@ class Response {
     }
 
     /**
-     * 
      * @return string Response type can be auth, error or redirect (in case of PayPal).
      */
     public function getType () {
