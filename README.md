@@ -19,7 +19,7 @@ To learn about the different types of requests and the required attributes, refe
 
 ### Instantiating Strading
 
-Service is a factory for building the requests using a template and populating the request with your credentials.
+[Service](./Service.php) is used to construct [Request](./Request.php) using existing templates and to pre-populate them with your API credentials.
 
 ```php
 /**
