@@ -54,11 +54,11 @@ class Response {
         $this->transaction['paypal_token'] =  empty($response->paypal->token) ? null : (string) $response->paypal->token;
 
         if ($this->getType() === 'ERROR') {
-            $this->error = [
+            $this->error = array(
                 'code' => (string) $response->error->code,
                 'message' => empty($response->error->message) ? null : (string) $response->error->message,
                 'data' => empty($response->error->data) ? null : (string) $response->error->data
-            ];
+            );
         }
 
         if (!empty($response->paypal->redirecturl)) {
