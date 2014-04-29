@@ -36,6 +36,7 @@ class Request {
         $this->headers[] = 'Authorization: Basic ' . base64_encode($username . ':' . $password);
         $this->xml = $xml;
 
+        // @todo What about multipart requests?
         $this->type = (string) $this->xml->xpath('/requestblock/request')[0]->attributes()['type'];
 
         if ($this->getType() === 'TRANSACTIONQUERY') {
@@ -124,6 +125,9 @@ class Request {
         return $xml;
     }
 
+    /**
+     * @return array
+     */
     public function getHeaders () {
         return $this->headers;
     }

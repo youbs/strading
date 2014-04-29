@@ -22,14 +22,27 @@ class Error {
         $this->data = $data;
     }
     
+    /**
+     * @return string
+     */
     public function getCode () {
         return $this->code;
     }
 
+    /**
+     * @return string
+     */
     public function getMessage () {
         return $this->message;
     }
 
+    /**
+     * This tag contains one or more child elements. If the error code is "30000" (Field Error)
+     * then this field will contain the field (or fields) which caused the error.
+     * 
+     * @todo https://github.com/gajus/strading/issues/1
+     * @return string
+     */
     public function getData () {
         return $this->data;
     }

@@ -13,11 +13,6 @@ class RequestCardAuthTest extends PHPUnit_Framework_TestCase {
         );
 
         $this->service = new \Gajus\Strading\Service($this->credentials['site_reference'], $this->credentials['username'], $this->credentials['password']);
-
-        $factory = new \RandomLib\Factory;
-        $generator = $factory->getGenerator(new \SecurityLib\Strength(\SecurityLib\Strength::MEDIUM));
-
-        $this->order_reference = $generator->generateString(32, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ');
     }
 
     private function loadXML ($test_name, array $replace = array()) {
@@ -51,12 +46,60 @@ class RequestCardAuthTest extends PHPUnit_Framework_TestCase {
     }
 
     public function testMakeRequest () {
+        $factory = new \RandomLib\Factory;
+        $generator = $factory->getGenerator(new \SecurityLib\Strength(\SecurityLib\Strength::MEDIUM));
+
+        $order_reference = $generator->generateString(32, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ');
+
         $auth = $this->service->request('card/auth');
 
         $auth->populate(array(
             'billing' => array(
                 'amount' => 100,
                 'amount[currencycode]' => 'GBP',
+                'email' => 'foo@bar.baz',
+                'name' => array(
+                    'first' => 'Foo',
+                    'last' => 'Bar'
+                ),
+                'payment' => array(
+                    'pan' => '4111110000000211',
+                    'securitycode' => '123',
+                    'expirydate' => '10/2031'
+                ),
+                'payment[type]' => 'VISA'
+            ),
+            'merchant' => array(
+                'orderreference' => $order_reference
+            ),
+            'customer' => array(
+                'name' => array(
+                        'first' => 'Foo',
+                        'last' => 'Bar'
+                    ),
+                'email' => 'foo@bar.baz'
+            )
+        ), '/requestblock/request');
+
+        $response = $auth->request();
+
+        // All requests have the generic information available.
+        $this->assertNotNull($response->getTransaction());
+
+        // Valid "card/auth" must not produce an error.
+        $this->assertNull($response->getError());
+
+        // "card/auth" must not redirect user.
+        $this->assertNull($response->getRedirectUrl());
+    }
+
+    public function testMakeRequestWithError () {
+        $auth = $this->service->request('card/auth');
+
+        $auth->populate(array(
+            'billing' => array(
+                'amount' => 100,
+                'amount[currencycode]' => 'XXX', // Invalid currency.
                 'email' => 'foo@bar.baz',
                 'name' => array(
                     'first' => 'Foo',
@@ -81,16 +124,19 @@ class RequestCardAuthTest extends PHPUnit_Framework_TestCase {
             )
         ), '/requestblock/request');
 
-        $this->assertXmlStringEqualsXmlString($this->loadXML('request_card_auth/test_populate_request', ['orderreference' => $this->order_reference]), $auth->getXML());
-
         $response = $auth->request();
 
-        $this->assertInstanceOf('Gajus\Strading\Response', $response);
+        // All requests have the generic information available.
+        $this->assertNotNull($response->getTransaction());
 
-        $xml = $this->normaliseXML($response->getXML()->asXML());
+        $error = $response->getError();
 
-        $expected_xml_response = $this->normaliseXML($this->loadXML('request_card_auth/test_make_request'));
+        $this->assertInstanceOf('Gajus\Strading\Error', $error);
+        $this->assertSame('30000', $error->getCode());
+        $this->assertSame('Invalid field', $error->getMessage());
+        $this->assertSame('currencyiso3a', $error->getData());
 
-        $this->assertXmlStringEqualsXmlString($expected_xml_response, $xml);
+        // "card/auth" must not redirect user.
+        $this->assertNull($response->getRedirectUrl());
     }
 }

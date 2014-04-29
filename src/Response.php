@@ -35,24 +35,25 @@ class Response {
     public function __construct (\SimpleXMLElement $xml, Request $request) {
         $this->xml = $xml;
 
-        #die(var_dump( $request->getType() ));
-        // Relevant to card payment only.
-        if (count($this->xml->xpath('/responseblock/response')) !== 1) {
-            throw new Exception\UnexpectedValueException('Multipart response.');
-        }
-
         $response = $this->xml->xpath('/responseblock/response')[0];
 
+        $this->type = (string) $response->attributes()['type'];
+
+        // Relevant to card payment only.
+        #if (count($this->xml->xpath('/responseblock/response')) !== 1) {
+        #    throw new Exception\UnexpectedValueException('Multipart response.');
+        #}        
+
         $this->transaction['request_reference'] = (string) $this->xml->xpath('/responseblock')[0]->requestreference;
-        $this->transaction['response_type'] = (string) $response['type'];
         $this->transaction['transaction_type'] =  empty($response->billing->payment['type']) ? null : (string) $response->billing->payment['type'];
         $this->transaction['transaction_reference'] =  empty($response->transactionreference) ? null : (string) $response->transactionreference;
         $this->transaction['timestamp'] = empty($response->timestamp) ? null : (string) $response->timestamp;
         $this->transaction['parent_transaction_reference'] =  empty($response->operation->parenttransactionreference) ? null : (string) $response->operation->parenttransactionreference;
         $this->transaction['authcode'] =  empty($response->authcode) ? null : (string) $response->authcode;
         $this->transaction['amount'] = empty($response->billing->amount) ? null : (string) $response->billing->amount/100;
+        $this->transaction['paypal_token'] =  empty($response->paypal->token) ? null : (string) $response->paypal->token;
 
-        if (!empty($response->error->code)) {
+        if ($this->getType() === 'ERROR') {
             $this->error = [
                 'code' => (string) $response->error->code,
                 'message' => empty($response->error->message) ? null : (string) $response->error->message,
@@ -60,8 +61,8 @@ class Response {
             ];
         }
 
-        if (!empty($response->response->paypal->redirecturl)) {
-            $this->redirect_url = (string) $response->response->paypal->redirecturl;
+        if (!empty($response->paypal->redirecturl)) {
+            $this->redirect_url = (string) $response->paypal->redirecturl;
         }
 
         /* else if (empty($transaction['authcode'])) {
@@ -82,11 +83,11 @@ class Response {
      * @return null|Gajus\Strading\Error
      */
     public function getError () {
-        if (!isset($this->response['error_code'])) {
+        if ($this->getType() !== 'ERROR') {
             return;
         }
 
-        return new Error($this->response['error_code'], $this->response['error_message'], $this->response['error_data']);
+        return new Error($this->error['code'], $this->error['message'], $this->error['data']);
     }
 
     /**
@@ -96,18 +97,15 @@ class Response {
      * @return string URL to redirect to the client to.
      */
     public function getRedirectUrl () {
-
+        return $this->redirect_url;
     }
 
     /**
-     * Response type tells what is the next thing that the app should be doing (discoverability).
      * 
      * @return string Response type can be auth, error or redirect (in case of PayPal).
      */
     public function getType () {
-        #'auth',
-        #'error',
-        #'redirect'
+        return $this->type;
     }
 
     /**

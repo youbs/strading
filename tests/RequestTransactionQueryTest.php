@@ -14,10 +14,34 @@ class RequestTransactionQueryTest extends PHPUnit_Framework_TestCase {
         $this->service = new \Gajus\Strading\Service($this->credentials['site_reference'], $this->credentials['username'], $this->credentials['password']);
     }
 
-    private function loadXML ($test_name) {
+    private function loadXML ($test_name, array $replace = array()) {
+        $xml = file_get_contents(__DIR__ . '/xml/' . $test_name . '.xml');
+
         $placeholders = array_map(function ($name) { return '{' . $name . '}'; }, array_keys($this->credentials));
+        $xml = str_replace($placeholders, $this->credentials, $xml);
         
-        return str_replace($placeholders, array_values($this->credentials), file_get_contents(__DIR__ . '/xml/' . $test_name . '.xml'));
+        $placeholders = array_map(function ($name) { return '{' . $name . '}'; }, array_keys($replace));
+        $xml = str_replace($placeholders, $replace, $xml);
+
+        return $xml;
+    }
+
+    /**
+     * Remove all text nodes. Used to compare structure of the XML documents.
+     */
+    private function normaliseXML ($xml) {
+        $dom = new \DOMDocument;
+        $dom->preserveWhiteSpace = false;
+        $dom->formatOutput = true;
+        $dom->loadXML($xml);
+        $xpath = new \DOMXPath($dom);
+
+        foreach ($xpath->query('//*[not(*) and text()]') as $node) {
+            $node->nodeValue = '';
+            $node->removeChild($node->firstChild);
+        }
+
+        return $dom->saveXML();
     }
 
     public function testSiteReferenceInFilter () {

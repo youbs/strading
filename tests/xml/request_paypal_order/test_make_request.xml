@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<responseblock version="3.67">
+  <requestreference>X2081949</requestreference>
+  <response type="ORDER">
+    <merchant>
+      <orderreference>YRIYAFSTATLJKCCZAYYZWEPKURXNMIEO</orderreference>
+    </merchant>
+    <transactionreference>3-32-122176</transactionreference>
+    <billing>
+      <payment type="PAYPAL"/>
+    </billing>
+    <timestamp>2014-04-29 16:03:58</timestamp>
+    <paypal>
+      <redirecturl>https://webapp.securetrading.net/cgi-bin/webscr?token=3x32x122176&amp;useraction=commit&amp;cmd=_express-checkout</redirecturl>
+      <token>3x32x122176</token>
+    </paypal>
+    <settlement>
+      <settleduedate>2014-04-29</settleduedate>
+      <settlestatus>0</settlestatus>
+    </settlement>
+    <live>0</live>
+    <error>
+      <message>Ok</message>
+      <code>0</code>
+    </error>
+    <operation>
+      <accounttypedescription>ECOM</accounttypedescription>
+    </operation>
+  </response>
+</responseblock>
