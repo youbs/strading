@@ -37,8 +37,10 @@ class Request {
         $this->xml = $xml;
 
         // @todo What about multipart requests?
+        // PHP 5.3 does not allow array access to the method response.
         $this->type = $this->xml->xpath('/requestblock/request');
-        $this->type = (string) $this->type[0]->attributes()['type'];
+        $this->type = $this->type[0]->attributes();
+        $this->type = (string) $this->type['type'];
 
         if ($this->getType() === 'TRANSACTIONQUERY') {
             $this->populate(array(

@@ -35,11 +35,16 @@ class Response {
     public function __construct (\SimpleXMLElement $xml, Request $request) {
         $this->xml = $xml;
 
-        $response = $this->xml->xpath('/responseblock/response')[0];
+        // PHP 5.3 does not allow array access to the method response.
+        $response = $this->xml->xpath('/responseblock/response');
+        $response = $response[0];
 
-        $this->type = (string) $response->attributes()['type'];
+        $this->type = $response->attributes();
+        $this->type = (string) $this->type['type'];
 
-        $this->transaction['request_reference'] = (string) $this->xml->xpath('/responseblock')[0]->requestreference;
+        $request_block = $this->xml->xpath('/responseblock');
+
+        $this->transaction['request_reference'] = (string) $request_block[0]->requestreference;
         $this->transaction['transaction_type'] =  empty($response->billing->payment['type']) ? null : (string) $response->billing->payment['type'];
         $this->transaction['transaction_reference'] =  empty($response->transactionreference) ? null : (string) $response->transactionreference;
         $this->transaction['timestamp'] = empty($response->timestamp) ? null : (string) $response->timestamp;
