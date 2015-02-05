@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<requestblock version="3.67">
+  <alias>{username}</alias>
+  <request type="ALTERNATIVE_AUTH">
+    <operation>
+      <sitereference>{site_reference}</sitereference>
+      <accounttypedescription>ECOM</accounttypedescription>
+    </operation>
+  </request>
+</requestblock>
