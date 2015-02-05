@@ -10,6 +10,7 @@ namespace Gajus\Strading;
  */
 class Service {
     private
+        $template_dir,
         $interface_url,
         $site_reference,
         $username,
@@ -26,6 +27,30 @@ class Service {
         $this->site_reference = $site_reference;
         $this->username = $username;
         $this->password = $password;
+
+        $this->setTemplateDirectory(__DIR__ . '/template');
+    }
+
+    /**
+     * @param string $dir The directory
+     */
+    public function setTemplateDirectory($dir)
+    {
+        if ( ! is_dir($dir)) {
+            throw new Exception\InvalidArgumentException("'{$dir}' is not a valid directory");
+        }
+
+        $this->template_dir = $dir;
+
+        return $this;
+    }
+
+    /**
+     * @return string The template directory
+     */
+    public function getTemplateDirectory()
+    {
+        return $this->template_dir;
     }
     
     /**
@@ -33,7 +58,7 @@ class Service {
      * @return Gajus\Strading\Request
      */
     public function request ($name) {
-        $template = __DIR__ . '/template/' . $name . '.xml';
+        $template = $this->getTemplateDirectory() . '/' . $name . '.xml';
         
         if (!file_exists($template)) {
             throw new Exception\InvalidArgumentException('Request template does not exist.');
