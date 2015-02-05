@@ -182,6 +182,14 @@ The above will produce:
 
 Methods to dump XML are for debugging only. You do not need to deal with XML when making the request or handling the response.
 
+### Changing the template directory
+The location of your request templates can be changed by calling the ```setTemplateDirectory()``` method.
+```php
+$service->setTemplateDirectory('/my/templates/live/here');
+
+$service->getTemplateDirectory(); // Returns: /my/templates/live/here
+```
+
 ### Make Request
 
 Make the request and capture the `Response`:
