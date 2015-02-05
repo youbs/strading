@@ -65,6 +65,25 @@ class RequestTest extends PHPUnit_Framework_TestCase {
         return $auth;
     }
 
+    public function testBuildRequestWithDifferentTemplate()
+    {
+        $templatePath = __DIR__.'/xml/alternative/template';
+        $service = $this->service->setTemplateDirectory($templatePath);
+
+        $this->assertEquals($service->getTemplateDirectory(), $templatePath);
+
+        $auth = $this->service->request('card/auth');
+
+        $this->assertInstanceOf('Gajus\Strading\Request', $auth);
+
+        $request_xml = $auth->getXML();
+
+        // The purpose of this test is to make sure that request is stripped of empty tags.
+        $this->assertXmlStringEqualsXmlString($this->loadXML('alternative/stubs/card_auth'), $request_xml);
+
+        return $auth;
+    }
+
     /**
      * @depends testBuildRequest
      */
