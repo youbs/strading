@@ -1,9 +1,8 @@
 # Strading
 
-[![Build Status](https://travis-ci.org/gajus/strading.png?branch=master)](https://travis-ci.org/gajus/strading)
-[![Coverage Status](https://coveralls.io/repos/gajus/strading/badge.png?branch=master)](https://coveralls.io/r/gajus/strading?branch=master)
-[![Latest Stable Version](https://poser.pugx.org/gajus/strading/version.png)](https://packagist.org/packages/gajus/strading)
-[![License](https://poser.pugx.org/gajus/strading/license.png)](https://packagist.org/packages/gajus/strading)
+[![Build Status](https://img.shields.io/travis/gajus/strading/master.svg)](https://travis-ci.org/gajus/strading)
+[![Coverage Status](https://img.shields.io/coveralls/gajus/strading/master.svg)](https://coveralls.io/r/gajus/strading?branch=master)
+[![Latest Stable Version](https://img.shields.io/packagist/v/gajus/strading.svg)](https://packagist.org/packages/gajus/strading)
 
 Secure Trading Web Services API abstraction.
 
