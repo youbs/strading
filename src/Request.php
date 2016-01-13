@@ -5,7 +5,8 @@ namespace Gajus\Strading;
  * @link https://github.com/gajus/strading for the canonical source repository
  * @license https://github.com/gajus/strading/blob/master/LICENSE BSD 3-Clause
  */
-class Request {
+class Request
+{
     private
         /**
          * @var string
@@ -29,9 +30,11 @@ class Request {
      * @param string $site_reference
      * @param string $username
      * @param string $password
-     * @param SimpleXMLElement $xml
+     * @param SimpleXMLElement|\SimpleXMLElement $xml
+     * @throws Exception\InvalidArgumentException
      */
-    public function __construct ($interface_url, $site_reference, $username, $password, \SimpleXMLElement $xml) {
+    public function __construct($interface_url, $site_reference, $username, $password, \SimpleXMLElement $xml)
+    {
         $this->interface_url = $interface_url;
         $this->headers[] = 'Authorization: Basic ' . base64_encode($username . ':' . $password);
         $this->xml = $xml;
@@ -40,9 +43,14 @@ class Request {
         // PHP 5.3 does not allow array access to the method response.
         $this->type = $this->xml->xpath('/requestblock/request');
         $this->type = $this->type[0]->attributes();
-        $this->type = (string) $this->type['type'];
+        $this->type = (string)$this->type['type'];
 
         if ($this->getType() === 'TRANSACTIONQUERY') {
+            $this->populate(array(
+                'alias' => $username,
+                'request/filter/sitereference' => $site_reference
+            ), '/requestblock');
+        } else if ($this->getType() === 'TRANSACTIONUPDATE') {
             $this->populate(array(
                 'alias' => $username,
                 'request/filter/sitereference' => $site_reference
@@ -58,31 +66,34 @@ class Request {
     /**
      * @return string
      */
-    public function getType () {
+    public function getType()
+    {
         return $this->type;
     }
-    
+
     /**
      * Populate XML template using data from an array.
-     * 
+     *
      * @param array $data ['node name' => 'text node value', 'another node[attribute]' => 'attribute value']
      * @param string $namespace XML namespace under which the node resides, e.g. /requestblock/request
      * @return null
+     * @throws Exception\InvalidArgumentException
      */
-    public function populate (array $data, $namespace = '') {
+    public function populate(array $data, $namespace = '')
+    {
         foreach ($data as $k => $v) {
             if (is_array($v)) {
                 $this->populate($v, $namespace . '/' . $k);
             } else {
                 $attribute = null;
-                
+
                 if (($attribute_position = strpos($k, '[')) !== false) {
                     $attribute = substr($k, $attribute_position + 1, -1);
                     $k = substr($k, 0, $attribute_position);
                 }
-                
+
                 $element = $this->xml->xpath($namespace . '/' . $k);
-                
+
                 if (count($element) === 0) {
                     throw new Exception\InvalidArgumentException($namespace . '/' . $k . ' path does not refer to an existing element.');
                 } else if (count($element) > 1) {
@@ -103,7 +114,8 @@ class Request {
      *
      * @return string
      */
-    public function getXML () {
+    public function getXML()
+    {
         $dom = new \DOMDocument;
         $dom->preserveWhiteSpace = false;
         $dom->formatOutput = true;
@@ -134,16 +146,18 @@ class Request {
     /**
      * @return array
      */
-    public function getHeaders () {
+    public function getHeaders()
+    {
         return $this->headers;
     }
-    
+
     /**
      * Issue the request.
-     *
      * @return Gajus\Strading\Response
+     * @throws Exception\RuntimeException
      */
-    public function request () {
+    public function request()
+    {
         $ch = curl_init();
 
         $options = array(
@@ -159,17 +173,19 @@ class Request {
         );
 
         curl_setopt_array($ch, $options);
-        
+
         $raw_response = curl_exec($ch);
 
-        $info  = curl_getinfo($ch);
+        //print_r($raw_response);
+
+        $info = curl_getinfo($ch);
 
         if ($info['http_code'] !== 200) {
             throw new Exception\RuntimeException($raw_response);
         }
 
         $response = new \SimpleXMLElement($raw_response);
-        
-        return new Response($response, $this);   
+
+        return new Response($response, $this);
     }
 }

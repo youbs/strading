@@ -1,0 +1,14 @@
+<requestblock version="3.67">
+    <alias/>
+    <request type="TRANSACTIONUPDATE">
+        <filter>
+            <sitereference/>
+            <transactionreference/>
+        </filter>
+        <updates>
+            <settlement>
+                <settlestatus>3</settlestatus>
+            </settlement>
+        </updates>
+    </request>
+</requestblock>

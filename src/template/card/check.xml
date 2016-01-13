@@ -1,6 +1,6 @@
 <requestblock version="3.67">
     <alias/>
-    <request type="AUTH">
+    <request type="ACCOUNTCHECK">
         <merchant>
             <email/>
             <orderreference/>
