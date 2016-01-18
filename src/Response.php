@@ -54,6 +54,7 @@ class Response
         $this->transaction['authcode'] = empty($response->authcode) ? null : (string)$response->authcode;
         $this->transaction['amount'] = empty($response->billing->amount) ? null : (string)$response->billing->amount / 100;
         $this->transaction['paypal_token'] = empty($response->paypal->token) ? null : (string)$response->paypal->token;
+        $this->transaction['record'] = empty($response->record) ? null : (string)$response->record;
 
         if (isset($response->error)) {
             $this->error = array(
@@ -95,7 +96,7 @@ class Response
      *
      * @return bool
      */
-    public function IsOk()
+    public function isOk()
     {
         if (!isset($this->error)) {
             return true;
