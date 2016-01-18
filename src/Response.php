@@ -46,6 +46,8 @@ class Response
 
         $request_block = $this->xml->xpath('/responseblock');
 
+        $record = $this->xml->xpath('/responseblock/response/record');
+
         $this->transaction['request_reference'] = (string)$request_block[0]->requestreference;
         $this->transaction['transaction_type'] = empty($response->billing->payment['type']) ? null : (string)$response->billing->payment['type'];
         $this->transaction['transaction_reference'] = empty($response->transactionreference) ? null : (string)$response->transactionreference;
@@ -54,7 +56,7 @@ class Response
         $this->transaction['authcode'] = empty($response->authcode) ? null : (string)$response->authcode;
         $this->transaction['amount'] = empty($response->billing->amount) ? null : (string)$response->billing->amount / 100;
         $this->transaction['paypal_token'] = empty($response->paypal->token) ? null : (string)$response->paypal->token;
-        $this->transaction['record'] = empty($response->record) ? null : (string)$response->record;
+        $this->transaction['record'] = empty($record) ? null : $record;
 
         if (isset($response->error)) {
             $this->error = array(
