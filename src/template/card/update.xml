@@ -1,0 +1,23 @@
+<requestblock version="3.67">
+    <alias/>
+    <request type="TRANSACTIONUPDATE">
+        <filter>
+            <sitereference/>
+            <transactionreference/>
+        </filter>
+        <updates>
+            <billing>
+                <email/>
+                <premise/>
+                <street/>
+                <town/>
+                <county/>
+                <country/>
+                <postcode/>
+                <payment>
+                    <expirydate/>
+                </payment>
+            </billing>
+        </updates>
+    </request>
+</requestblock>
