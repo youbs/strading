@@ -176,8 +176,6 @@ class Request
 
         $raw_response = curl_exec($ch);
 
-        //print_r($raw_response);
-
         $info = curl_getinfo($ch);
 
         if ($info['http_code'] !== 200) {
