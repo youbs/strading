@@ -104,6 +104,10 @@ class Response
             return true;
         }
 
+        if (isset($this->error['code'])) {
+            return $this->error['code'] == 0;
+        }
+
         return false;
     }
 
