@@ -53,5 +53,8 @@
             <accounttypedescription>ECOM</accounttypedescription>
             <parenttransactionreference/>
         </operation>
+        <settlement>
+            <settlestatus/>
+        </settlement>
     </request>
 </requestblock>
