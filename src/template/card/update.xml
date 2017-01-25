@@ -6,6 +6,9 @@
             <transactionreference/>
         </filter>
         <updates>
+            <merchant>
+                <orderreference/>
+            </merchant>
             <billing>
                 <email/>
                 <premise/>
@@ -18,6 +21,11 @@
                     <expirydate/>
                 </payment>
             </billing>
+            <settlement>
+                <settlebaseamount/>
+                <settleduedate/>
+                <settlestatus/>
+            </settlement>
         </updates>
     </request>
 </requestblock>

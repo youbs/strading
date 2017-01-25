@@ -7,7 +7,7 @@
         </filter>
         <updates>
             <settlement>
-                <settlestatus>3</settlestatus>
+                <settlestatus>1</settlestatus>
             </settlement>
         </updates>
     </request>
