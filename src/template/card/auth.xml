@@ -46,6 +46,9 @@
                 <pan/>
                 <securitycode/>
             </payment>
+            <subscription>
+                <number/>
+            </subscription>
         </billing>
         <operation>
             <authmethod/>

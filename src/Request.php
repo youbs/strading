@@ -103,7 +103,7 @@ class Request
                 if ($attribute) {
                     $element[0]->addAttribute($attribute, $v);
                 } else {
-                    $element[0]->{0} = $v;
+                    dom_import_simplexml($element[0])->nodeValue = $v;
                 }
             }
         }

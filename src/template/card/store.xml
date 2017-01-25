@@ -2,7 +2,6 @@
     <alias/>
     <request type="STORE">
         <merchant>
-            <email/>
             <orderreference/>
         </merchant>
         <customer>
@@ -24,7 +23,6 @@
             </name>
         </customer>
         <billing>
-            <amount/>
             <premise/>
             <street/>
             <town/>
@@ -41,7 +39,6 @@
                 <first/>
             </name>
             <payment>
-                <startdate/>
                 <expirydate/>
                 <pan/>
                 <securitycode/>
@@ -49,7 +46,7 @@
         </billing>
         <operation>
             <sitereference/>
-            <accounttypedescription>ECOM</accounttypedescription>
+            <accounttypedescription>STORE</accounttypedescription>
             <parenttransactionreference/>
         </operation>
     </request>
