@@ -4,6 +4,7 @@
         <merchant>
             <email/>
             <orderreference/>
+            <chargedescription/>
         </merchant>
         <customer>
             <telephone/>
@@ -57,6 +58,7 @@
             <parenttransactionreference/>
         </operation>
         <settlement>
+            <settleduedate/>
             <settlestatus/>
         </settlement>
     </request>
