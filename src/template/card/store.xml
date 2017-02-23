@@ -46,7 +46,7 @@
         </billing>
         <operation>
             <sitereference/>
-            <accounttypedescription>STORE</accounttypedescription>
+            <accounttypedescription>CARDSTORE</accounttypedescription>
             <parenttransactionreference/>
         </operation>
     </request>
